@@ -27,6 +27,7 @@ resource "kubernetes_deployment" "simpletimeservice" {
         container {
           name  = "simpletimeservice"
           image = var.container_image
+
           port {
             container_port = 8080
           }
@@ -38,18 +39,21 @@ resource "kubernetes_deployment" "simpletimeservice" {
 
 resource "kubernetes_service" "simpletimeservice" {
   metadata {
-    name = "simpletimeservice"
+    name      = "simpletimeservice"
+    namespace = "default"
   }
 
   spec {
     selector = {
       app = kubernetes_deployment.simpletimeservice.metadata[0].labels.app
     }
+
     type = "LoadBalancer"
 
     port {
-      port        = 8080
+      port        = 80
       target_port = 8080
+      protocol    = "TCP"
     }
   }
 }
