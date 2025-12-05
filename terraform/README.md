@@ -21,6 +21,17 @@ Terraform requires access to your AWS account. Do **NOT commit AWS keys** to the
 
 ### Options:
 
+
+0. Create S3 bucket and DynamoDB table in AWS.
+
+aws s3 mb s3://my-terraform-state-bucket
+aws dynamodb create-table \
+  --table-name terraform-lock-table \
+  --attribute-definitions AttributeName=LockID,AttributeType=S \
+  --key-schema AttributeName=LockID,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST
+
+  
 1. Configure AWS CLI:
 
 ```bash
