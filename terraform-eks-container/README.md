@@ -1,190 +1,115 @@
-# Terraform Infrastructure for SimpleTimeService (EKS Deployment)
 
-This repository contains Terraform code to deploy the SimpleTimeService Docker container into a fully managed EKS (Elastic Kubernetes Service) cluster on AWS.
+# Terraform EKS Container Deployment
 
-The infrastructure includes:
+## Overview
+This repository contains Terraform scripts to provision an **AWS VPC**, **EKS Cluster**, and deploy a **sample web application** on Kubernetes.  
+The deployment is automated via Terraform and requires minimal manual steps.
 
-A VPC (2 public + 2 private subnets)
+---
 
-An EKS cluster running Kubernetes v1.34
+## Prerequisites
 
-A managed node group in private subnets
+- Terraform >= 1.5.0
+- AWS CLI configured with credentials
+- Optional: EC2 instance in the same VPC if using private-only EKS endpoints
 
-Kubernetes Deployment & Service for SimpleTimeService
+---
 
-A LoadBalancer to access the service publicly
+## AWS Authentication
 
-1. Prerequisites
+Terraform requires access to your AWS account. Do **NOT commit AWS keys** to the repo.
 
-Before deploying, ensure you have the following installed on your EC2 instance or local machine:
+### Options:
 
-Terraform
-Terraform >= 1.6.0
-- Install:
+1. Configure AWS CLI:
 
-wget https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
-unzip terraform_1.9.5_linux_amd64.zip
-sudo mv terraform /usr/local/bin/
-terraform -v
-
-AWS CLI
-sudo apt update -y
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-aws --version
-
-kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-kubectl version --client
-
-
-2. AWS Authentication
-Create an IAM User (if not already done)
-
-In AWS Console:
-IAM → Users → Create User
-
-Enable Programmatic Access and download:
-
-AWS Access Key ID
-
-AWS Secret Access Key
-
-Configure AWS CLI
+```bash
 aws configure
 
 
-Enter:
+Or use environment variables:
 
-AWS Access Key ID: <your-access-key>
-AWS Secret Access Key: <your-secret>
-Default region: us-east-1
-Output: json
+export AWS_ACCESS_KEY_ID=<your-access-key>
+export AWS_SECRET_ACCESS_KEY=<your-secret-key>
+export AWS_DEFAULT_REGION=us-east-1
 
-3. Repository Structure
-SimpleTimeService/
+How to Deploy
 
-│
-├── app/                          # Application Code (Task 1)
-│   ├── main.py                   # FastAPI / Flask service
-│   ├── Dockerfile                # Docker build file
-│   ├── requirements.txt          # Python dependencies
-│   └── README.md                 # Task 1 README (Docker build + run instructions)
-│
-└── terraform/                    # Infrastructure Code (Task 2)
-    ├── main.tf                   # Terraform providers & backend
-    ├── vpc.tf                    # VPC, subnets, IGW, NAT
-    ├── eks.tf                    # EKS cluster + nodegroup
-    ├── k8s.tf                    # Kubernetes Deployment + Service
-    ├── variables.tf              # Input variable definitions
-    ├── terraform.tfvars          # Actual variable values (user-provided)
-    ├── outputs.tf                # Output values (LB DNS, cluster details)
-    └── README.md                 # Task 2 README (Terraform, AWS, EKS instructions)
+Initialize Terraform:
 
-
-4. Terraform Variable Configuration
-
-Edit terraform.tfvars and set your values:
-
-region                      = "us-east-1"
-cluster_name                = "simpletime-eks"
-eks_kubernetes_version      = "1.34"
-container_image             = "vamshiboddu/simpletimeservice:latest"
-
-> git clone https://github.com/bodduvamshi/SimpleTimeService.git
-
-cd SimpleTimeService
-
-5. Deploying the Infrastructure
-
-Move into terraform folder:
-
-cd terraform/
-
-Initialize Terraform
 terraform init
 
-Validate the configuration
+
+Validate configuration:
+
 terraform validate
 
-Generate a Deployment Plan
+
+See the plan:
+
 terraform plan
 
-Apply & Deploy Everything
-terraform apply -auto-approve
+
+Apply the infrastructure and deploy application:
+
+terraform apply
 
 
-Terraform will:
+Only terraform plan and terraform apply are required. No manual steps needed if public endpoint is enabled.
 
-Create VPC
+EKS Cluster Endpoint Access
 
-Create EKS cluster
+By default, this EKS cluster is configured with:
 
-Create NodeGroup
+Public endpoint: enabled
 
-Deploy SimpleTimeService container
+Private endpoint: enabled
 
-Create a LoadBalancer in public subnets
+If the cluster is private-only:
 
-6. Get Kubernetes Access
+You must run Terraform from an EC2 instance inside the same VPC.
 
-After apply completes:
+Ensure the EC2 instance has port 443 access to the EKS API.
 
-aws eks update-kubeconfig --region us-east-1 --name simpletime-eks
+Verifying Deployment
 
+Check cluster status:
 
-Verify connection:
-
-kubectl get nodes
-kubectl get pods
-kubectl get svc
-
-7. Accessing the Application
-
-Find the LoadBalancer URL:
-
-kubectl get svc simpletimeservice
+aws eks describe-cluster --name terraform-eks-cluster --query 'cluster.status'
 
 
-Look for:
+Check Kubernetes resources:
 
-simpletimeservice   LoadBalancer   EXTERNAL-IP
-
-
-Open in browser:
-
-http://<EXTERNAL-IP>:8080/time
+kubectl get pods -n app
+kubectl get svc -n app
+kubectl port-forward svc/my-app-lb 8080:80 -n app
+curl http://localhost:8080/
 
 
-You should see the JSON time response.
 
-8. Destroying All Resources
+The web application should be accessible via the LoadBalancer created in kubernetes_service.
 
-From the terraform folder:
+Variables
 
-terraform destroy -auto-approve
+All variables are defined in variables.tf with defaults provided in terraform.tfvars.
+You can modify them as needed:
+
+aws_region
+
+cluster_name
+
+vpc_cidr
+
+subnet_ids
+
+Node group sizes and instance types
+
+Notes
+
+Only Terraform commands (plan and apply) are needed to deploy everything.
+
+Public endpoint is recommended for reviewers to avoid EKS API access issues.
+
+Code follows Terraform best practices and is modularized.
 
 
-This will delete:
-
-EKS Cluster
-
-NodeGroup
-
-VPC
-
-Load Balancer
-
-All networking resources
-
-9. Notes 
-
-
-Terraform state is stored locally on the EC2 instance.
-
-Kubernetes resources (Deployment + Service) are automatically applied by Terraform after cluster creation.
-
-Only terraform plan and terraform apply are required to deploy the entire infra (as per task requirement).

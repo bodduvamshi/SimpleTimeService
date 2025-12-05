@@ -1,19 +1,27 @@
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = module.eks.cluster_auth_token
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-resource "kubernetes_namespace" "app" {
+resource "kubernetes_namespace_v1" "app" {
   metadata {
     name = "app"
   }
 }
 
-resource "kubernetes_deployment" "app" {
+resource "kubernetes_deployment_v1" "app" {
   metadata {
     name      = "my-app"
-    namespace = kubernetes_namespace.app.metadata[0].name
+    namespace = kubernetes_namespace_v1.app.metadata[0].name
   }
 
   spec {
@@ -35,8 +43,8 @@ resource "kubernetes_deployment" "app" {
       spec {
         container {
           name  = "my-app"
-          image = "nginx:latest"   # Replace with your container
-          ports {
+          image = "vamshiboddu/simpletimeservice:latest"
+          port {
             container_port = 80
           }
         }
@@ -48,7 +56,7 @@ resource "kubernetes_deployment" "app" {
 resource "kubernetes_service" "app" {
   metadata {
     name      = "my-app-lb"
-    namespace = kubernetes_namespace.app.metadata[0].name
+    namespace = kubernetes_namespace_v1.app.metadata[0].name
   }
 
   spec {

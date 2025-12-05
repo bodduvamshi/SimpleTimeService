@@ -18,7 +18,18 @@ variable "public_subnets" {
 variable "private_subnets" {
   default = ["10.0.3.0/24", "10.0.4.0/24"]
 }
+variable "ec2_key_name" {
+  description = "EC2 Key Pair name for EKS nodes"
+  type        = string
+}
+variable "cluster_name" {
+  default = "terraform-eks-cluster"
+}
 
 variable "tags" {
   default = { "Project" = "Terraform-EKS" }
+}
+
+variable "aws_region" {
+  default = "us-east-1"
 }

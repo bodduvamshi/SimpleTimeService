@@ -25,11 +25,12 @@ GET /
 # app directory sturcture
 
 SimpleTimeService/
-├── app/
-│   ├── main.py
-│   ├── requirements.txt
-│   └── Dockerfile
-    |__README.md
+
+├── app/                          # Application Code (Task 1)
+│   ├── main.py                   # FastAPI / Flask service
+│   ├── Dockerfile                # Docker build file
+│   ├── requirements.txt          # Python dependencies
+│   └── README.md                 # Task 1 README (Docker build + run instructions)
 
 
 
