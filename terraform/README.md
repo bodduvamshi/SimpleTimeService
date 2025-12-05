@@ -55,7 +55,7 @@ Enter:
 
 AWS Access Key ID: <your-access-key>
 AWS Secret Access Key: <your-secret>
-Default region: us-east-2
+Default region: us-east-1
 Output: json
 
 3. Repository Structure
@@ -83,7 +83,7 @@ SimpleTimeService/
 
 Edit terraform.tfvars and set your values:
 
-region                      = "us-east-2"
+region                      = "us-east-1"
 cluster_name                = "simpletime-eks"
 eks_kubernetes_version      = "1.34"
 container_image             = "vamshiboddu/simpletimeservice:latest"
