@@ -19,21 +19,26 @@ A LoadBalancer to access the service publicly
 Before deploying, ensure you have the following installed on your EC2 instance or local machine:
 
 Terraform
-sudo yum install -y unzip
-wget https://releases.hashicorp.com/terraform/1.9.8/terraform_1.9.8_linux_amd64.zip -O terraform.zip
+sudo apt install -y unzip
+wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O 
+terraform.zip
 unzip terraform.zip
 sudo mv terraform /usr/local/bin/
 terraform -version
 
 AWS CLI
-sudo yum install awscli -y
+sudo apt update -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
 aws --version
 
 kubectl
-curl -o kubectl https://amazon-eks.s3.amazonaws.com/1.34.0/2024-09-30/bin/linux/amd64/kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 kubectl version --client
+
 
 2. AWS Authentication
 Create an IAM User (if not already done)
