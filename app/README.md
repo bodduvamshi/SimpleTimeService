@@ -1,8 +1,8 @@
-SimpleTimeService — Minimal DevOps Challenge Application
+# TASK 1:SimpleTimeService — Minimal DevOps Challenge Application
 Purpose:
 
 SimpleTimeService is a minimal microservice created as part of the Particle41 DevOps Team Challenge.
-It demonstrates:
+# It demonstrates:
 
 Basic web application development
 
@@ -14,7 +14,7 @@ Publishing images to a public registry (Docker Hub)
 
 Documentation and clear setup instructions
 
-The service exposes one endpoint:
+# The service exposes one endpoint:
 
 GET /
 {
@@ -22,17 +22,20 @@ GET /
   "ip": "<visitor ip>"
 }
 
+# app directory sturcture
+
 SimpleTimeService/
 ├── app/
 │   ├── main.py
 │   ├── requirements.txt
 │   └── Dockerfile
-└── README.md
+    |__README.md
+
 
 
 All application code and Dockerfile are located inside the app/ directory as recommended.
 
-Prerequisites:
+# Prerequisites:
 
 To run or deploy this application, you need the following tools (on a local laptop OR any cloud VM like AWS EC2(I used)):
 
@@ -66,7 +69,7 @@ sudo usermod -aG docker $USER
 
 Create free account: https://hub.docker.com/signup
 
-Cloning the Repository:
+# Cloning the Repository:
 
 Clone the repo to your laptop or EC2 instance:
 
@@ -76,7 +79,7 @@ cd SimpleTimeService/app/
 
 Running the App Locally (Optional)
 
-Install dependencies:
+# Install dependencies:
 
 pip install -r requirements.txt
 
@@ -90,17 +93,17 @@ Access in browser:
 
 http://localhost:8080/
 
-🐳 Docker Instructions
+# Docker Instructions
 
 The application is fully Dockerized and runs as a non-root user inside the container as required.
 
-✔ 1. Build Docker Image
+    1. Build Docker Image
 
 From inside the app/ directory:
 
 docker build -t simpletimeservice:latest .
 
-✔ 2. Run the Container
+    2. Run the Container
 
 docker run -p 8080:8080 simpletimeservice:latest
 
@@ -114,7 +117,7 @@ OR if running on EC2:
 
 http://<EC2-PUBLIC-IP>:8080/  (make sure to include inbound ports 22, 80, 8080 while creation security group)
 
-Publish to Docker Hub (I did as Required for Task)
+# Publish to Docker Hub (I did as Required for Task)
 1. Login to Docker Hub
 
 docker login
@@ -134,7 +137,7 @@ https://hub.docker.com/repositories
 
 Pulling the Image for Testing
 
-Anyone can run your app using:
+# Anyone can run your app using:
 
 docker pull vamshiboddu/simpletimeservice:latest
 docker run -p 8080:8080 vamshiboddu/simpletimeservice:latest
@@ -149,10 +152,5 @@ Or:
 
 http://<cloud-vm-ip>:8080/
 
-Security Notes
-
-No secrets or credentials are stored in the repository.
-
-The app inside the container runs as a non-root user for security best test practices.
 
 Docker image is kept minimal — only required dependencies included.

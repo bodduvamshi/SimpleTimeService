@@ -1,13 +1,3 @@
-provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.auth.token
-}
-
-data "aws_eks_cluster_auth" "auth" {
-  name = module.eks.cluster_id
-}
-
 resource "kubernetes_deployment" "simpletimeservice" {
   metadata {
     name      = "simpletimeservice"
@@ -19,6 +9,7 @@ resource "kubernetes_deployment" "simpletimeservice" {
 
   spec {
     replicas = 1
+
     selector {
       match_labels = {
         app = "simpletimeservice"
@@ -36,7 +27,8 @@ resource "kubernetes_deployment" "simpletimeservice" {
         container {
           name  = "simpletimeservice"
           image = var.container_image
-          ports {
+
+          port {
             container_port = 8080
           }
         }
@@ -47,18 +39,21 @@ resource "kubernetes_deployment" "simpletimeservice" {
 
 resource "kubernetes_service" "simpletimeservice" {
   metadata {
-    name = "simpletimeservice"
+    name      = "simpletimeservice"
+    namespace = "default"
   }
 
   spec {
     selector = {
       app = kubernetes_deployment.simpletimeservice.metadata[0].labels.app
     }
+
     type = "LoadBalancer"
 
     port {
       port        = 80
       target_port = 8080
+      protocol    = "TCP"
     }
   }
 }
