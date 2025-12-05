@@ -19,12 +19,13 @@ A LoadBalancer to access the service publicly
 Before deploying, ensure you have the following installed on your EC2 instance or local machine:
 
 Terraform
-sudo apt install -y unzip
-wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -O 
-terraform.zip
-unzip terraform.zip
+Terraform >= 1.6.0
+- Install:
+
+wget https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
+unzip terraform_1.9.5_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
-terraform -version
+terraform -v
 
 AWS CLI
 sudo apt update -y
@@ -101,7 +102,7 @@ cd SimpleTimeService
 
 Move into terraform folder:
 
-cd terraform
+cd terraform/
 
 Initialize Terraform
 terraform init

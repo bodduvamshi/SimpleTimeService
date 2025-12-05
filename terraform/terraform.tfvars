@@ -11,3 +11,5 @@ container_image = "vamshiboddu/simpletimeservice:latest"
 
 node_instance_type = "t3.medium"
 node_desired       = 1
+
+

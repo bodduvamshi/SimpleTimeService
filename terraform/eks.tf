@@ -1,23 +1,19 @@
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = ">= 20.0.0"
+  source          = "terraform-aws-modules/eks/aws"
+  version         = "21.10.1"
 
-  cluster_name    = var.eks_cluster_name
-  cluster_version = var.eks_kubernetes_version
+  cluster_name    = "simpletime-eks"
+  cluster_version = "1.34"
+  subnets         = module.vpc.private_subnets
+  vpc_id          = module.vpc.vpc_id
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
-
-  cluster_endpoint_public_access  = true
-  cluster_endpoint_private_access = true
-
-  eks_managed_node_groups = {
+  # Managed Node Group
+  node_groups = {
     simpletime_nodes = {
-      desired_size   = var.node_desired
-      min_size       = 1
-      max_size       = 2
-      instance_types = [var.node_instance_type]
-      subnets        = module.vpc.private_subnets
+      desired_capacity = 1
+      max_capacity     = 2
+      min_capacity     = 1
+      instance_type    = "t3.medium"
     }
   }
 
