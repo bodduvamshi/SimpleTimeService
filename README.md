@@ -5,7 +5,7 @@ This repository contains the **SimpleTimeService** microservice and Terraform co
 The project is structured into two main folders:
 
 - `app/` – Contains the microservice code, Dockerfile, and instructions to build and run the container.
-- `eks-terraform/` – Contains Terraform code to provision AWS infrastructure, including VPC, EKS cluster, node groups, and Kubernetes deployment/service for SimpleTimeService.
+- `terraform/` – Contains Terraform code to provision AWS infrastructure, including VPC, EKS cluster, node groups, and Kubernetes deployment/service for SimpleTimeService.
 
 > **Important:** Please read the folder-level READMEs before executing anything.
 
