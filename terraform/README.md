@@ -93,14 +93,15 @@ cluster_name                = "simpletime-eks"
 eks_kubernetes_version      = "1.34"
 container_image             = "vamshiboddu/simpletimeservice:latest"
 
+> git clone https://github.com/bodduvamshi/SimpleTimeService.git
 
-👉 Replace <your-dockerhub-username> with your actual Docker Hub ID.
+cd SimpleTimeService
 
 5. Deploying the Infrastructure
 
 Move into terraform folder:
 
-cd terraform/
+cd terraform
 
 Initialize Terraform
 terraform init
